@@ -145,7 +145,9 @@ textarea{resize:vertical;min-height:84px}
 .quote{font-family:var(--display);font-style:italic;font-size:clamp(24px,3.4vw,36px);line-height:1.3;text-align:center;max-width:26ch;margin-inline:auto;color:var(--cream)}
 
 /* gift page (opened by QR) */
-dialog{background:var(--panel);color:var(--cream);border:1.5px solid var(--gold);padding:0;width:min(540px,calc(100vw - 32px));max-height:calc(100dvh - 32px)}
+dialog{background:var(--panel);color:var(--cream);border:1.5px solid var(--gold);padding:0;width:min(540px,calc(100vw - 32px));max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px);overflow:auto}
+/* запасной вариант для браузеров без showModal (старый iOS, встроенные браузеры) */
+dialog.fallback{position:fixed;inset:0;margin:auto;height:fit-content;z-index:40;box-shadow:0 0 0 100vmax rgba(5,10,30,.8)}
 dialog::backdrop{background:rgba(5,10,30,.8)}
 .dlg{position:relative;padding:40px 28px 30px;display:flex;flex-direction:column;gap:16px;text-align:center;align-items:center}
 .dlg::before{content:"";position:absolute;inset:8px;border:1px solid var(--line);pointer-events:none}
@@ -551,7 +553,8 @@ function renderMap(){
 
 // ===== QR и ссылки =====
 function linkFor(id){ return location.href.split('#')[0] + '#g-' + id }
-function qrBlock(url, text){
+function qrBlock(id, text){
+  var url = linkFor(id);
   var row = document.createElement('div'); row.className = 'qrrow';
   if (window.qrcode) {
     var q = qrcode(0, 'M'); q.addData(url); q.make();
@@ -569,7 +572,8 @@ function qrBlock(url, text){
     try { navigator.clipboard.writeText(url).then(done, fail) } catch (e) { fail() }
   });
   lr.append(inp, cp); box.appendChild(lr);
-  var open = document.createElement('a'); open.href = url; open.className = 'textbtn'; open.textContent = 'Открыть по ссылке';
+  var open = document.createElement('button'); open.type = 'button'; open.className = 'textbtn'; open.textContent = 'Открыть по ссылке';
+  open.addEventListener('click', function(){ openGift(id) });
   box.appendChild(open);
   row.appendChild(box);
   return row;
@@ -606,7 +610,7 @@ $('giveForm').addEventListener('submit', function(e){
       p.textContent = 'Цепочка ' + chainName(saved) + ', звено ' + saved.position + '. ' +
         (saved.amount > 0 ? 'Подарок уже в списке: любой может получить его через «Получить добро». Или отдайте QR кому-нибудь сами.'
                           : 'Покажите этот QR тому, кому помогли: он откроет ссылку и сможет продолжить цепочку.');
-      res.append(h, p, qrBlock(linkFor(saved.id)));
+      res.append(h, p, qrBlock(saved.id));
       res.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     });
   }).catch(function(e){ console.error(e); toast('Не получилось сохранить. Проверьте интернет и попробуйте ещё раз.') })
@@ -624,7 +628,7 @@ $('getBtn').addEventListener('click', function(){
     }
     var h = document.createElement('h4'); h.textContent = 'Вам выпало: ' + r.text;
     var p = document.createElement('p'); p.textContent = rub(r.amount) + ' · цепочка ' + (chainName(r) || 'новая');
-    res.append(h, p, qrBlock(linkFor(r.id), 'Отсканируйте QR телефоном или откройте ссылку, чтобы получить подарок. Он закреплён за вами на 30 минут.'));
+    res.append(h, p, qrBlock(r.id, 'Отсканируйте QR телефоном или откройте ссылку, чтобы получить подарок. Он закреплён за вами на 30 минут.'));
     return refresh();
   }).catch(function(e){ console.error(e); toast('Не получилось. Проверьте интернет и попробуйте ещё раз.') })
     .then(function(){ btn.disabled = false });
@@ -635,11 +639,17 @@ var dlg = $('giftDlg');
 function dlgShow(build){
   var b = $('dlgBody'); b.innerHTML = '';
   var x = document.createElement('button'); x.className = 'close'; x.type = 'button'; x.setAttribute('aria-label', 'Закрыть'); x.textContent = '×';
-  x.addEventListener('click', function(){ dlg.close() });
+  x.addEventListener('click', function(){ closeDlg() });
   b.appendChild(x); build(b);
-  if (!dlg.open) dlg.showModal();
+  if (dlg.open) return;
+  try { dlg.showModal() } catch (e) { dlg.classList.add('fallback'); dlg.setAttribute('open', '') }
 }
 function mk(tag, cls, text){ var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e }
+function closeDlg(){
+  if (dlg.classList.contains('fallback')) { dlg.removeAttribute('open'); dlg.classList.remove('fallback'); clearHash() }
+  else dlg.close();
+}
+function clearHash(){ if (/^#g-/.test(location.hash)) history.replaceState(null, '', location.href.split('#')[0]) }
 dlg.addEventListener('close', function(){
   if (/^#g-/.test(location.hash)) history.replaceState(null, '', location.href.split('#')[0]);
 });
@@ -666,7 +676,7 @@ function openGift(id){
         b.append(mk('p', 'note', r.status === 'claimed'
           ? 'Это ваше доброе дело, и его уже получили. Вы не знаете кто, но цепочка продолжилась.'
           : 'Это ваше доброе дело. Передайте QR или ссылку кому-нибудь, а когда его получат, статус изменится.'));
-        if (r.status !== 'claimed') b.appendChild(qrBlock(linkFor(r.id)));
+        if (r.status !== 'claimed') b.appendChild(qrBlock(r.id));
         b.appendChild(chainBtn(r));
       } else if (r.status === 'claimed') {
         if (mine.has('claimed', r.id)) {
@@ -701,12 +711,12 @@ function openGift(id){
 }
 function continueBtn(r){
   var b = mk('button', 'btn', 'Продолжить цепочку'); b.type = 'button';
-  b.addEventListener('click', function(){ setParent(r); dlg.close(); $('give').scrollIntoView({ behavior: 'smooth' }); setTimeout(function(){ $('deedText').focus({ preventScroll: true }) }, 400) });
+  b.addEventListener('click', function(){ setParent(r); closeDlg(); $('give').scrollIntoView({ behavior: 'smooth' }); setTimeout(function(){ $('deedText').focus({ preventScroll: true }) }, 400) });
   return b;
 }
 function chainBtn(r){
   var b = mk('button', 'textbtn', 'Посмотреть цепочку на карте'); b.type = 'button';
-  b.addEventListener('click', function(){ selChain = r.chain_id; renderMap(); dlg.close(); $('chains').scrollIntoView({ behavior: 'smooth' }) });
+  b.addEventListener('click', function(){ selChain = r.chain_id; renderMap(); closeDlg(); $('chains').scrollIntoView({ behavior: 'smooth' }) });
   return b;
 }
 function route(){
