@@ -6,23 +6,22 @@
 <title>Квантовое волонтёрство</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400..700;1,400..700&family=Lora:ital,wght@0,400..700;1,400..700&display=swap">
 <style>
-body{margin:0}
 /* Layout: ночное небо из презентации — одна центральная колонка, золотые рамки, арочные карточки, созвездия как цепочки */
 :root{
   color-scheme:dark;
   --night:#0D1736;
   --panel:#111D42;
-  --panel-2:#16244F;
   --cream:#EDE3CC;
   --gold:#D8B66A;
   --muted:#BDB6A4;
   --line:rgba(216,182,106,.35);
+  --ok:#9FCB98;
   --display:'Cormorant Garamond',Georgia,'Times New Roman',serif;
   --body:Lora,Georgia,'Times New Roman',serif;
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{background:var(--night);color:var(--cream);font-family:var(--body);font-size:17px;line-height:1.6;padding-inline:20px}
+body{margin:0;background:var(--night);color:var(--cream);font-family:var(--body);font-size:17px;line-height:1.6;padding-inline:20px}
 #sky{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
 .wrap{position:relative;z-index:1;max-width:1120px;margin-inline:auto;display:flex;flex-direction:column;gap:96px;padding-block:0 64px}
 a{color:var(--gold)}
@@ -44,7 +43,8 @@ nav a:hover{color:var(--gold)}
 .btn.ghost{background:transparent;color:var(--gold)}
 .btn.ghost:hover{background:rgba(216,182,106,.12);border-color:var(--gold)}
 .btn.small{padding:10px 16px;font-size:12px}
-.btn[disabled]{background:transparent;color:var(--muted);border-color:var(--line);cursor:default}
+.btn[disabled]{opacity:.5;cursor:wait}
+.textbtn{font:inherit;font-size:14px;background:none;border:0;color:var(--gold);text-decoration:underline;cursor:pointer;padding:0}
 
 /* ornaments */
 .rule{display:flex;align-items:center;gap:12px;width:min(420px,100%);color:var(--gold)}
@@ -82,32 +82,33 @@ section{display:flex;flex-direction:column;gap:44px;scroll-margin-top:90px}
 .arch h3{font-size:28px}
 .arch p{color:var(--muted);font-size:16px}
 
-/* gifts + form */
+/* give / get panels */
 .two{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:28px;align-items:start}
 .panel{border:1px solid var(--line);background:var(--panel);padding:28px;display:flex;flex-direction:column;gap:20px;min-width:0}
 .panel h3{font-size:30px}
-.panel .note{font-size:14px;color:var(--muted)}
-.gifts{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
-.gifts li{display:flex;align-items:center;gap:14px;padding-block:16px;border-top:1px solid var(--line);flex-wrap:wrap}
-.gifts li:first-child{border-top:0;padding-top:0}
-.gifts .t{flex:1;min-width:150px}
-.gifts .t b{display:block;font-family:var(--display);font-size:23px;font-weight:600;line-height:1.2}
-.gifts .t span{font-size:14px;color:var(--muted)}
-.star{width:14px;height:14px;background:var(--gold);clip-path:polygon(50% 0,60% 40%,100% 50%,60% 60%,50% 100%,40% 60%,0 50%,40% 40%);flex:none}
+.note{font-size:14px;color:var(--muted)}
 form{display:flex;flex-direction:column;gap:18px}
-label,legend{font-size:12px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);padding:0}
-fieldset{border:0;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+label{font-size:12px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold)}
 .field{display:flex;flex-direction:column;gap:8px}
 input[type=text],input[type=number],textarea{font:inherit;color:var(--cream);background:var(--night);border:1px solid var(--line);border-radius:2px;padding:12px 14px;width:100%}
-textarea{resize:vertical;min-height:76px}
-.chips{display:flex;flex-wrap:wrap;gap:8px}
-.chips input{position:absolute;opacity:0}
-.chips span{display:block;padding:8px 14px;border:1px solid var(--line);border-radius:999px;font-size:15px;color:var(--muted);cursor:pointer;text-transform:none;letter-spacing:0}
-.chips input:checked+span{background:var(--gold);color:var(--night);border-color:var(--gold);font-weight:600}
-.chips input:focus-visible+span{outline:2px solid var(--cream);outline-offset:2px}
-.qr{display:flex;gap:20px;align-items:center;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:20px}
-.qr canvas{width:132px;height:132px;background:var(--cream);padding:8px;flex:none}
-.qr .code{font-family:var(--display);font-size:30px;font-weight:600;letter-spacing:3px;color:var(--gold)}
+textarea{resize:vertical;min-height:84px}
+.err{color:#F0A08C;font-size:14px}
+.banner{border:1px dashed var(--gold);padding:12px 14px;font-size:15px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:space-between}
+.banner b{color:var(--gold);font-weight:600}
+.result{border-top:1px solid var(--line);padding-top:20px;display:flex;flex-direction:column;gap:16px}
+.result h4{font-family:var(--display);font-size:30px;font-weight:600;margin:0;color:var(--gold);line-height:1.1}
+.qrrow{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+.qrrow img{width:150px;height:150px;background:#fff;padding:6px;image-rendering:pixelated;flex:none}
+.qrrow>div{flex:1;min-width:180px;display:flex;flex-direction:column;gap:10px}
+.linkrow{display:flex;gap:8px}
+.linkrow input{flex:1;min-width:0;font-size:14px!important;padding:10px 12px!important}
+.gifts{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.gifts li{display:flex;align-items:baseline;gap:12px;padding-block:12px;border-top:1px solid var(--line)}
+.gifts li:first-child{border-top:0;padding-top:0}
+.gifts .t{flex:1;min-width:0;font-family:var(--display);font-size:22px;font-weight:600;line-height:1.2;overflow-wrap:anywhere}
+.gifts .a{color:var(--gold);font-variant-numeric:tabular-nums;white-space:nowrap}
+.star{width:12px;height:12px;background:var(--gold);clip-path:polygon(50% 0,60% 40%,100% 50%,60% 60%,50% 100%,40% 60%,0 50%,40% 40%);flex:none;align-self:center}
+.count{font-family:var(--display);font-size:52px;line-height:1;color:var(--cream);font-variant-numeric:tabular-nums}
 
 /* chains */
 .map{border:1.5px solid var(--gold);background:var(--panel);display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr)}
@@ -118,12 +119,14 @@ textarea{resize:vertical;min-height:76px}
 .tabs button[aria-pressed=true]{color:var(--night);background:var(--gold);border-color:var(--gold);font-weight:600}
 .side h3{font-size:30px}
 .links{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
-.links li{position:relative;padding:0 0 18px 28px;font-size:15.5px;line-height:1.45}
+.links li{position:relative;padding:0 0 18px 28px;font-size:15.5px;line-height:1.45;overflow-wrap:anywhere}
 .links li::before{content:"";position:absolute;left:3px;top:6px;width:10px;height:10px;border-radius:50%;background:var(--gold)}
 .links li::after{content:"";position:absolute;left:7.5px;top:18px;bottom:-4px;width:1px;background:var(--line)}
 .links li:last-child::after{display:none}
 .links li.open::before{background:transparent;border:1.5px dashed var(--gold)}
 .links small{display:block;color:var(--muted);font-size:12px;letter-spacing:2px;text-transform:uppercase}
+.links .st{color:var(--muted);font-size:13px}
+.links .st.done{color:var(--ok)}
 .chain line{stroke:var(--gold);stroke-width:1;opacity:.3;transition:opacity .2s}
 .chain circle{fill:var(--gold);opacity:.45;transition:opacity .2s}
 .chain{cursor:pointer}
@@ -141,8 +144,22 @@ textarea{resize:vertical;min-height:76px}
 .three p{color:var(--muted)}
 .quote{font-family:var(--display);font-style:italic;font-size:clamp(24px,3.4vw,36px);line-height:1.3;text-align:center;max-width:26ch;margin-inline:auto;color:var(--cream)}
 
+/* gift page (opened by QR) */
+dialog{background:var(--panel);color:var(--cream);border:1.5px solid var(--gold);padding:0;width:min(540px,calc(100vw - 32px));max-height:calc(100dvh - 32px)}
+dialog::backdrop{background:rgba(5,10,30,.8)}
+.dlg{position:relative;padding:40px 28px 30px;display:flex;flex-direction:column;gap:16px;text-align:center;align-items:center}
+.dlg::before{content:"";position:absolute;inset:8px;border:1px solid var(--line);pointer-events:none}
+.dlg>*{position:relative}
+.dlg h3{font-size:clamp(30px,6vw,40px);overflow-wrap:anywhere}
+.dlg .amount{font-family:var(--display);font-size:28px;color:var(--gold)}
+.dlg .close{position:absolute;right:16px;top:12px;font-size:26px;line-height:1;background:none;border:0;color:var(--muted);cursor:pointer;padding:4px}
+.dlg .qrrow{justify-content:center;text-align:left}
+.pill{display:inline-block;font-size:12px;letter-spacing:2px;text-transform:uppercase;border:1px solid var(--line);padding:4px 10px;color:var(--muted)}
+.pill.done{color:var(--ok);border-color:var(--ok)}
+
 footer{display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center;font-size:13px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);border-top:1px solid var(--line);padding-top:36px}
-.demo-flag{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);border:1px dashed var(--line);padding:4px 10px;align-self:flex-start}
+.mode{font-size:12px;letter-spacing:1.5px;text-transform:none;border:1px dashed var(--line);padding:6px 12px;max-width:60ch}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:50;background:var(--cream);color:var(--night);padding:12px 18px;font-size:15px;max-width:calc(100vw - 32px);box-shadow:0 8px 30px rgba(0,0,0,.4)}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
 </style>
 </head>
@@ -155,9 +172,9 @@ footer{display:flex;flex-direction:column;align-items:center;gap:18px;text-align
   <a class="brand" href="#top"><i></i>Квантовое волонтёрство</a>
   <nav>
     <a href="#how">Как это работает</a>
-    <a href="#gifts">Подарки</a>
+    <a href="#give">Сделать добро</a>
+    <a href="#get">Получить добро</a>
     <a href="#chains">Цепочки</a>
-    <a href="#anon">Анонимность</a>
   </nav>
 </header>
 
@@ -170,14 +187,15 @@ footer{display:flex;flex-direction:column;align-items:center;gap:18px;text-align
   <h1>Квантовое<br>волонтёрство</h1>
   <div class="rule"><i></i></div>
   <p class="tag">Как одно доброе дело может запустить целую цепочку</p>
-  <p class="sub">Оплатите кофе, обед или час своего времени для незнакомого человека. Он получит подарок по QR-коду и передаст добро дальше. Имён нет, а цепочка остаётся на карте.</p>
+  <p class="sub">Сделайте доброе дело для незнакомого человека: оплатите кофе, обед или подарите своё время. Он получит его по QR-коду и передаст добро дальше. Имён нет, а цепочка остаётся на карте.</p>
   <div class="cta">
-    <a class="btn" href="#give">Подарить добро</a>
-    <a class="btn ghost" href="#gifts">Получить подарок</a>
+    <a class="btn" href="#give">Сделать доброе дело</a>
+    <a class="btn ghost" href="#get">Получить добро</a>
   </div>
   <div class="stats">
-    <div><strong>3</strong>цепочки</div>
-    <div><strong>12</strong>добрых дел</div>
+    <div><strong id="sChains">–</strong>цепочек</div>
+    <div><strong id="sDeeds">–</strong>добрых дел</div>
+    <div><strong id="sLong">–</strong>самая длинная</div>
     <div><strong>0</strong>имён</div>
   </div>
 </section>
@@ -189,53 +207,49 @@ footer{display:flex;flex-direction:column;align-items:center;gap:18px;text-align
     <div class="rule"><i></i></div>
   </div>
   <div class="arches">
-    <div class="arch"><span class="n">1</span><h3>Сделай что-то хорошее</h3><p>Оплати подарок для незнакомца: кофе, обед, пачку чипсов. Сайт создаст QR-код.</p></div>
-    <div class="arch"><span class="n">2</span><h3>Кто-то его получит</h3><p>Любой человек оставляет заявку на сайте, получает код и забирает подарок.</p></div>
-    <div class="arch"><span class="n">3</span><h3>Передай дальше</h3><p>Получатель делает своё доброе дело, и оно само становится следующим звеном.</p></div>
+    <div class="arch"><span class="n">1</span><h3>Сделай доброе дело</h3><p>Напиши, что даришь, и укажи сумму. Сайт создаст QR-код и ссылку.</p></div>
+    <div class="arch"><span class="n">2</span><h3>Кто-то его получит</h3><p>Любой нажимает «Получить добро», сканирует QR и забирает подарок.</p></div>
+    <div class="arch"><span class="n">3</span><h3>Передай дальше</h3><p>Получатель делает своё доброе дело, и оно встаёт следующим звеном.</p></div>
     <div class="arch"><span class="n">4</span><h3>Посмотри, куда дошло</h3><p>На карте видно, как растёт цепочка. Кто в ней участвовал, не знает никто.</p></div>
   </div>
 </section>
 
-<section id="gifts">
+<section id="participate">
   <div class="head">
     <p class="eyebrow">Участвовать</p>
-    <h2>Подарить или получить</h2>
+    <h2>Сделать или получить</h2>
     <div class="rule"><i></i></div>
-    <p class="lead">Два входа в одну цепочку. Можно начать новую или продолжить ту, что уже идёт.</p>
+    <p class="lead">Два входа в одну цепочку. Можно начать новую или продолжить ту, по которой добро пришло к вам.</p>
   </div>
   <div class="two">
     <div class="panel" id="give">
-      <h3>Сделать подарок</h3>
-      <form id="giveForm">
-        <fieldset>
-          <legend>Что подарить</legend>
-          <div class="chips">
-            <label><input type="radio" name="kind" id="k1" value="Кофе" checked><span>Кофе</span></label>
-            <label><input type="radio" name="kind" id="k2" value="Обед в столовой"><span>Обед в столовой</span></label>
-            <label><input type="radio" name="kind" id="k3" value="Чипсы"><span>Чипсы</span></label>
-            <label><input type="radio" name="kind" id="k4" value="Час времени"><span>Час времени</span></label>
-            <label><input type="radio" name="kind" id="k5" value="Помощь с учёбой"><span>Помощь с учёбой</span></label>
-          </div>
-        </fieldset>
-        <div class="field"><label for="sum">Сумма, ₽</label><input type="number" id="sum" min="0" step="10" value="250"></div>
-        <div class="field"><label for="wish">Пожелание получателю (необязательно)</label><textarea id="wish" placeholder="Хорошего дня. Передай дальше."></textarea></div>
-        <button class="btn" type="submit">Оплатить и получить QR</button>
-      </form>
-      <div class="qr" id="qrBox" hidden>
-        <canvas id="qr" width="232" height="232" aria-label="Макет QR-кода"></canvas>
-        <div>
-          <p class="note">Код подарка</p>
-          <p class="code" id="qrCode"></p>
-          <p class="note" id="qrText"></p>
-        </div>
+      <h3>Сделать доброе дело</h3>
+      <div class="banner" id="parentBanner" hidden>
+        <span>Вы продолжаете цепочку <b id="pbName"></b>, это будет звено <b id="pbPos"></b></span>
+        <button class="textbtn" type="button" id="pbCancel">Начать новую</button>
       </div>
-      <p class="demo-flag">Демо: оплата не подключена, QR — макет</p>
+      <form id="giveForm" novalidate>
+        <div class="field">
+          <label for="deedText">Какое доброе дело?</label>
+          <textarea id="deedText" maxlength="140" placeholder="Например: кофе для незнакомца"></textarea>
+        </div>
+        <div class="field">
+          <label for="deedAmount">Сумма, ₽</label>
+          <input type="number" id="deedAmount" min="0" max="100000" step="1" inputmode="numeric" placeholder="0, если без денег">
+        </div>
+        <p class="err" id="giveErr" hidden></p>
+        <button class="btn" type="submit" id="giveBtn">Сделать доброе дело</button>
+        <p class="note">Оплата пока не подключена: нажатие сразу создаёт доброе дело.</p>
+      </form>
+      <div class="result" id="giveResult" hidden></div>
     </div>
 
-    <div class="panel">
-      <h3>Ждут получателя</h3>
+    <div class="panel" id="get">
+      <h3>Получить добро</h3>
+      <p><span class="count" id="freeCount">–</span> <span class="note" id="freeLabel">подарков ждут получателя</span></p>
       <ul class="gifts" id="giftList"></ul>
-      <p class="demo-flag">Примеры подарков</p>
+      <button class="btn" type="button" id="getBtn">Получить добро</button>
+      <div class="result" id="getResult" hidden></div>
     </div>
   </div>
 </section>
@@ -248,12 +262,11 @@ footer{display:flex;flex-direction:column;align-items:center;gap:18px;text-align
     <p class="lead">Каждая цепочка похожа на созвездие: точка — доброе дело, линия — связь между незнакомыми людьми. Пунктирная точка ждёт продолжения.</p>
   </div>
   <div class="map">
-    <svg id="mapSvg" viewBox="0 0 660 440" role="img" aria-label="Карта цепочек добрых дел"></svg>
+    <svg id="mapSvg" viewBox="0 0 660 300" role="img" aria-label="Карта цепочек добрых дел"></svg>
     <div class="side">
       <div class="tabs" id="tabs"></div>
       <h3 id="chainName"></h3>
       <ol class="links" id="chainLinks"></ol>
-      <p class="demo-flag">Примеры цепочек</p>
     </div>
   </div>
 </section>
@@ -276,107 +289,461 @@ footer{display:flex;flex-direction:column;align-items:center;gap:18px;text-align
 <footer>
   <div class="rule"><i></i></div>
   <p>Игорь Москалик · Николай Хлебников · Егор Быков · Андрей Тиблевич</p>
-  <p>Студенческий проект · демо-версия</p>
+  <p class="mode" id="modeNote"></p>
 </footer>
 </div>
 
+<dialog id="giftDlg" aria-labelledby="dlgTitle">
+  <div class="dlg" id="dlgBody"></div>
+</dialog>
+<div id="toast" role="status" aria-live="polite" hidden></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script>
-// seeded random so the sky is the same on every load
-function rng(seed){return function(){seed=(seed*1664525+1013904223)%4294967296;return seed/4294967296}}
+// ===== Настройки базы =====
+// Пусто — демо-режим: данные хранятся только в этом браузере.
+// Заполнить данными проекта Supabase (Project Settings → API), чтобы цепочки стали общими для всех.
+var CONFIG = {
+  supabaseUrl: '',
+  supabaseKey: ''
+};
+
+var REMOTE = !!(CONFIG.supabaseUrl && CONFIG.supabaseKey);
+var RESERVE_MS = 30 * 60 * 1000; // выпавший подарок держится за человеком 30 минут
+var NAMES = ['Орион','Лира','Кассиопея','Андромеда','Пегас','Персей','Лебедь','Дракон','Геркулес','Волопас','Близнецы','Цефей','Возничий','Феникс','Стрелец','Водолей'];
+var ALPH = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+
+function $(id){ return document.getElementById(id) }
+function rng(seed){ return function(){ seed = (seed * 1664525 + 1013904223) % 4294967296; return seed / 4294967296 } }
+function hash(s){ var h = 7; for (var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 4294967296; return h }
+function newId(){
+  var a = new Uint8Array(6), s = '';
+  crypto.getRandomValues(a);
+  for (var i = 0; i < 6; i++) s += ALPH[a[i] % ALPH.length];
+  return s;
+}
+function rub(n){ return n > 0 ? n.toLocaleString('ru-RU') + ' ₽' : 'без денег' }
+function plural(n, one, few, many){
+  var m10 = n % 10, m100 = n % 100;
+  return m10 === 1 && m100 !== 11 ? one : m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14) ? few : many;
+}
+function toast(msg){
+  var t = $('toast'); t.textContent = msg; t.hidden = false;
+  clearTimeout(toast.t); toast.t = setTimeout(function(){ t.hidden = true }, 3500);
+}
+function free(d){
+  return d.status === 'waiting' || (d.status === 'reserved' && Date.now() - Date.parse(d.reserved_at) > RESERVE_MS);
+}
+
+// ===== Что сделано в этом браузере (только для подсказок, анонимно) =====
+var mine = {
+  get: function(k){ try { return JSON.parse(localStorage.getItem('qv-' + k)) || [] } catch (e) { return [] } },
+  has: function(k, id){ return mine.get(k).indexOf(id) >= 0 },
+  add: function(k, id){ try { var a = mine.get(k); if (a.indexOf(id) < 0) { a.push(id); localStorage.setItem('qv-' + k, JSON.stringify(a)) } } catch (e) {} }
+};
+
+// ===== Хранилище: демо (localStorage) =====
+var LS = 'qv-deeds';
+function seedRows(){
+  var chains = [
+    [['Кофе незнакомцу у главного корпуса', 250, 'claimed'], ['Помог одногруппнику разобраться с матанализом', 0, 'claimed'], ['Бесплатное занятие для школьника', 0, 'claimed'], ['Донёс соседке сумки до квартиры', 0, 'waiting']],
+    [['Обед в столовой корпуса Б', 320, 'claimed'], ['Провёл вечер с одиноким соседом', 0, 'claimed'], ['Починил велосипед мальчику со двора', 0, 'claimed']],
+    [['Пачка чипсов дежурному в общежитии', 120, 'claimed'], ['Помогла первокурснице с переездом', 0, 'claimed'], ['Капучино следующему в очереди', 220, 'waiting']],
+    [['Чай с пирожком для вахтёра', 150, 'waiting']]
+  ];
+  var rows = [], t = Date.now() - 6 * 864e5;
+  chains.forEach(function(ch){
+    var parent = null, chainId = null;
+    ch.forEach(function(d, i){
+      var id = newId(); chainId = chainId || id; t += 3 * 3600e3;
+      rows.push({ id: id, chain_id: chainId, parent_id: parent, position: i + 1, text: d[0], amount: d[1], status: d[2],
+        created_at: new Date(t).toISOString(), reserved_at: null, claimed_at: d[2] === 'claimed' ? new Date(t + 3600e3).toISOString() : null });
+      parent = id;
+    });
+  });
+  return rows;
+}
+function lsAll(){
+  var d = null;
+  try { d = JSON.parse(localStorage.getItem(LS)) } catch (e) {}
+  if (!Array.isArray(d)) { d = seedRows(); lsSave(d) }
+  return d;
+}
+function lsSave(d){ try { localStorage.setItem(LS, JSON.stringify(d)) } catch (e) {} }
+var memRows = null; // если localStorage недоступен
+var local = {
+  rows: function(){ try { localStorage.setItem('qv-test', '1'); return lsAll() } catch (e) { return memRows || (memRows = seedRows()) } },
+  list: function(){ return Promise.resolve(local.rows().slice()) },
+  get: function(id){ return Promise.resolve(local.rows().filter(function(x){ return x.id === id })[0] || null) },
+  create: function(row){ var a = local.rows(); a.push(row); lsSave(a); return Promise.resolve(row) },
+  reserveRandom: function(exclude){
+    var a = local.rows(), c = a.filter(function(x){ return x.amount > 0 && free(x) && exclude.indexOf(x.id) < 0 });
+    if (!c.length) return Promise.resolve(null);
+    var x = c[Math.floor(Math.random() * c.length)];
+    x.status = 'reserved'; x.reserved_at = new Date().toISOString(); lsSave(a);
+    return Promise.resolve(x);
+  },
+  claim: function(id){
+    var a = local.rows(), x = a.filter(function(y){ return y.id === id })[0];
+    if (!x || x.status === 'claimed') return Promise.resolve(null);
+    x.status = 'claimed'; x.claimed_at = new Date().toISOString(); lsSave(a);
+    return Promise.resolve(x);
+  }
+};
+
+// ===== Хранилище: Supabase (общая база) =====
+function api(path, opt){
+  opt = opt || {};
+  var h = { apikey: CONFIG.supabaseKey, 'Content-Type': 'application/json' };
+  if (CONFIG.supabaseKey.indexOf('sb_') !== 0) h.Authorization = 'Bearer ' + CONFIG.supabaseKey;
+  for (var k in (opt.headers || {})) h[k] = opt.headers[k];
+  return fetch(CONFIG.supabaseUrl.replace(/\/$/, '') + '/rest/v1/' + path, { method: opt.method || 'GET', headers: h, body: opt.body })
+    .then(function(r){
+      if (!r.ok) return r.text().then(function(t){ throw new Error(t || r.status) });
+      return r.status === 204 ? null : r.json();
+    });
+}
+function freeFilter(){
+  var cut = new Date(Date.now() - RESERVE_MS).toISOString();
+  return 'or=(status.eq.waiting,and(status.eq.reserved,reserved_at.lt.' + cut + '))';
+}
+var remote = {
+  list: function(){ return api('deeds?select=*&order=created_at.asc') },
+  get: function(id){ return api('deeds?select=*&id=eq.' + id).then(function(r){ return r[0] || null }) },
+  create: function(row){
+    return api('deeds', { method: 'POST', headers: { Prefer: 'return=representation' }, body: JSON.stringify(row) })
+      .then(function(r){ return r[0] });
+  },
+  reserveRandom: function(exclude){
+    return api('deeds?select=id&amount=gt.0&' + freeFilter()).then(function(list){
+      var ids = list.map(function(x){ return x.id }).filter(function(id){ return exclude.indexOf(id) < 0 });
+      ids.sort(function(){ return Math.random() - .5 });
+      ids = ids.slice(0, 5);
+      // берём первый подарок, который никто не успел забрать раньше нас
+      function next(){
+        if (!ids.length) return null;
+        var id = ids.shift();
+        return api('deeds?id=eq.' + id + '&' + freeFilter(), { method: 'PATCH', headers: { Prefer: 'return=representation' },
+          body: JSON.stringify({ status: 'reserved', reserved_at: new Date().toISOString() }) })
+          .then(function(r){ return r[0] || next() });
+      }
+      return next();
+    });
+  },
+  claim: function(id){
+    return api('deeds?id=eq.' + id + '&status=neq.claimed', { method: 'PATCH', headers: { Prefer: 'return=representation' },
+      body: JSON.stringify({ status: 'claimed', claimed_at: new Date().toISOString() }) })
+      .then(function(r){ return r[0] || null });
+  }
+};
+var store = REMOTE ? remote : local;
+
+// ===== Цепочки =====
+var rows = [], chains = [], byChain = {}, selChain = null, parent = null;
+
+function buildChains(){
+  var m = {};
+  rows.forEach(function(r){ (m[r.chain_id] = m[r.chain_id] || []).push(r) });
+  chains = Object.keys(m).map(function(k){
+    return m[k].sort(function(a, b){ return a.position - b.position || a.created_at.localeCompare(b.created_at) });
+  });
+  chains.sort(function(a, b){ return a[0].created_at.localeCompare(b[0].created_at) });
+  byChain = {};
+  chains.forEach(function(c, i){
+    c.id = c[0].chain_id;
+    c.name = NAMES[i % NAMES.length] + (i >= NAMES.length ? ' ' + (Math.floor(i / NAMES.length) + 1) : '');
+    c.last = Math.max.apply(null, c.map(function(r){ return Date.parse(r.claimed_at || r.created_at) }));
+    byChain[c.id] = c;
+  });
+}
+function chainName(r){ var c = byChain[r.chain_id]; return c ? '«' + c.name + '»' : '' }
+function statusText(r){
+  if (r.status === 'claimed') return r.amount > 0 ? 'получено' : 'передано дальше';
+  if (r.status === 'reserved' && !free(r)) return 'у получателя';
+  return r.amount > 0 ? 'ждёт получателя' : 'ещё не передано';
+}
+
+function refresh(){
+  return store.list().then(function(r){
+    rows = r || [];
+    buildChains();
+    renderStats(); renderGifts(); renderMap();
+  }).catch(function(e){ console.error(e); toast('Не удалось загрузить цепочки. Проверьте интернет и обновите страницу.') });
+}
+
+function renderStats(){
+  $('sChains').textContent = chains.length;
+  $('sDeeds').textContent = rows.length;
+  $('sLong').textContent = chains.reduce(function(m, c){ return Math.max(m, c.length) }, 0);
+}
+
+function renderGifts(){
+  var given = mine.get('given');
+  var avail = rows.filter(function(r){ return r.amount > 0 && free(r) });
+  var forMe = avail.filter(function(r){ return given.indexOf(r.id) < 0 });
+  $('freeCount').textContent = avail.length;
+  $('freeLabel').textContent = plural(avail.length, 'подарок ждёт', 'подарка ждут', 'подарков ждут') + ' получателя';
+  var ul = $('giftList'); ul.innerHTML = '';
+  avail.slice(-4).reverse().forEach(function(r){
+    var li = document.createElement('li'), s = document.createElement('i'), t = document.createElement('span'), a = document.createElement('span');
+    s.className = 'star'; t.className = 't'; a.className = 'a';
+    t.textContent = r.text; a.textContent = rub(r.amount);
+    li.append(s, t, a); ul.appendChild(li);
+  });
+  ul.hidden = !avail.length;
+  $('getBtn').hidden = !forMe.length;
+  if (!avail.length) $('freeLabel').textContent = 'подарков сейчас нет. Сделайте первое доброе дело.';
+  else if (!forMe.length) $('freeLabel').textContent += '. Все они ваши: подождите, пока кто-то их заберёт.';
+}
+
+function renderMap(){
+  var svg = $('mapSvg'), tabs = $('tabs'), NS = 'http://www.w3.org/2000/svg';
+  svg.innerHTML = ''; tabs.innerHTML = '';
+  var shown = chains.slice().sort(function(a, b){ return b.last - a.last }).slice(0, 6);
+  if (!shown.length) {
+    svg.setAttribute('viewBox', '0 0 660 160');
+    $('chainName').textContent = 'Пока нет цепочек';
+    $('chainLinks').innerHTML = '<li class="open"><small>Звено 1</small>Сделайте первое доброе дело, и здесь появится новое созвездие.</li>';
+    return;
+  }
+  if (!selChain || !byChain[selChain]) selChain = shown[0].id;
+  var band = 130;
+  svg.setAttribute('viewBox', '0 0 660 ' + (shown.length * band + 30));
+  function el(n, a){ var e = document.createElementNS(NS, n); for (var k in a) e.setAttribute(k, a[k]); return e }
+  shown.forEach(function(c, i){
+    var r = rng(hash(c.id)), openEnd = c[c.length - 1].status === 'claimed';
+    var n = c.length + (openEnd ? 1 : 0), step = Math.min(110, 540 / Math.max(n - 1, 1)), cy = 30 + i * band + band / 2 + 10;
+    var pts = [];
+    for (var k = 0; k < n; k++) pts.push([70 + k * step + (r() - .5) * 20, cy + (r() - .5) * 70]);
+    var g = el('g', { 'class': 'chain' + (c.id === selChain ? ' on' : '') });
+    for (k = 0; k < n - 1; k++) g.appendChild(el('line', { x1: pts[k][0], y1: pts[k][1], x2: pts[k + 1][0], y2: pts[k + 1][1] }));
+    pts.forEach(function(p, k){
+      var pending = k >= c.length || c[k].status !== 'claimed';
+      g.appendChild(el('circle', { cx: p[0], cy: p[1], r: pending ? 8 : 6, 'class': pending ? 'next' : '' }));
+    });
+    var t = el('text', { x: Math.max(10, pts[0][0] - 30), y: Math.min.apply(null, pts.map(function(p){ return p[1] })) - 16 });
+    t.textContent = c.name; g.appendChild(t);
+    g.addEventListener('click', function(){ selChain = c.id; renderMap() });
+    svg.appendChild(g);
+    var b = document.createElement('button');
+    b.type = 'button'; b.textContent = c.name; b.setAttribute('aria-pressed', c.id === selChain);
+    b.addEventListener('click', function(){ selChain = c.id; renderMap() });
+    tabs.appendChild(b);
+  });
+  var c = byChain[selChain], ol = $('chainLinks');
+  $('chainName').textContent = 'Цепочка «' + c.name + '»';
+  ol.innerHTML = '';
+  c.forEach(function(r, k){
+    var li = document.createElement('li'), sm = document.createElement('small'), st = document.createElement('span');
+    sm.textContent = 'Звено ' + (k + 1) + ' · ' + rub(r.amount);
+    st.className = 'st' + (r.status === 'claimed' ? ' done' : '');
+    st.textContent = ' — ' + statusText(r);
+    if (r.status !== 'claimed') li.className = 'open';
+    li.append(sm, document.createTextNode(r.text), st);
+    ol.appendChild(li);
+  });
+  if (c[c.length - 1].status === 'claimed') {
+    var li = document.createElement('li'); li.className = 'open';
+    li.innerHTML = '<small>Звено ' + (c.length + 1) + '</small>Ждёт продолжения';
+    ol.appendChild(li);
+  }
+}
+
+// ===== QR и ссылки =====
+function linkFor(id){ return location.href.split('#')[0] + '#g-' + id }
+function qrBlock(url, text){
+  var row = document.createElement('div'); row.className = 'qrrow';
+  if (window.qrcode) {
+    var q = qrcode(0, 'M'); q.addData(url); q.make();
+    var img = document.createElement('img'); img.src = q.createDataURL(6, 2); img.alt = 'QR-код со ссылкой на доброе дело';
+    row.appendChild(img);
+  }
+  var box = document.createElement('div');
+  if (text) { var p = document.createElement('p'); p.className = 'note'; p.textContent = text; box.appendChild(p) }
+  var lr = document.createElement('div'); lr.className = 'linkrow';
+  var inp = document.createElement('input'); inp.type = 'text'; inp.readOnly = true; inp.value = url; inp.setAttribute('aria-label', 'Ссылка');
+  var cp = document.createElement('button'); cp.type = 'button'; cp.className = 'btn ghost small'; cp.textContent = 'Копировать';
+  cp.addEventListener('click', function(){
+    var done = function(){ toast('Ссылка скопирована') };
+    var fail = function(){ inp.focus(); inp.select(); toast('Выделите ссылку и скопируйте вручную') };
+    try { navigator.clipboard.writeText(url).then(done, fail) } catch (e) { fail() }
+  });
+  lr.append(inp, cp); box.appendChild(lr);
+  var open = document.createElement('a'); open.href = url; open.className = 'textbtn'; open.textContent = 'Открыть по ссылке';
+  box.appendChild(open);
+  row.appendChild(box);
+  return row;
+}
+
+// ===== Сделать доброе дело =====
+function setParent(r){
+  parent = r;
+  $('parentBanner').hidden = !r;
+  if (r) { $('pbName').textContent = chainName(r); $('pbPos').textContent = r.position + 1 }
+}
+$('pbCancel').addEventListener('click', function(){ setParent(null) });
+
+$('giveForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  var text = $('deedText').value.trim(), raw = $('deedAmount').value.trim(), amount = raw === '' ? 0 : Number(raw), err = $('giveErr');
+  err.hidden = true;
+  if (text.length < 3) { err.textContent = 'Опишите доброе дело хотя бы парой слов.'; err.hidden = false; $('deedText').focus(); return }
+  if (!Number.isInteger(amount) || amount < 0 || amount > 100000) { err.textContent = 'Сумма — целое число рублей от 0 до 100 000.'; err.hidden = false; $('deedAmount').focus(); return }
+  var id = newId();
+  var row = { id: id, chain_id: parent ? parent.chain_id : id, parent_id: parent ? parent.id : null, position: parent ? parent.position + 1 : 1,
+    text: text, amount: amount, status: 'waiting', created_at: new Date().toISOString(), reserved_at: null, claimed_at: null };
+  var btn = $('giveBtn'); btn.disabled = true;
+  store.create(row).then(function(saved){
+    saved = saved || row;
+    mine.add('given', saved.id);
+    if (parent) mine.add('continued', parent.id);
+    setParent(null);
+    $('giveForm').reset();
+    return refresh().then(function(){
+      var res = $('giveResult'); res.innerHTML = ''; res.hidden = false;
+      var h = document.createElement('h4'); h.textContent = 'Вы сделали доброе дело!';
+      var p = document.createElement('p');
+      p.textContent = 'Цепочка ' + chainName(saved) + ', звено ' + saved.position + '. ' +
+        (saved.amount > 0 ? 'Подарок уже в списке: любой может получить его через «Получить добро». Или отдайте QR кому-нибудь сами.'
+                          : 'Покажите этот QR тому, кому помогли: он откроет ссылку и сможет продолжить цепочку.');
+      res.append(h, p, qrBlock(linkFor(saved.id)));
+      res.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+  }).catch(function(e){ console.error(e); toast('Не получилось сохранить. Проверьте интернет и попробуйте ещё раз.') })
+    .then(function(){ btn.disabled = false });
+});
+
+// ===== Получить добро =====
+$('getBtn').addEventListener('click', function(){
+  var btn = this; btn.disabled = true;
+  store.reserveRandom(mine.get('given')).then(function(r){
+    var res = $('getResult'); res.innerHTML = ''; res.hidden = false;
+    if (!r) {
+      res.innerHTML = '<p class="note">Свободных подарков сейчас нет. Загляните позже или начните свою цепочку.</p>';
+      return refresh();
+    }
+    var h = document.createElement('h4'); h.textContent = 'Вам выпало: ' + r.text;
+    var p = document.createElement('p'); p.textContent = rub(r.amount) + ' · цепочка ' + (chainName(r) || 'новая');
+    res.append(h, p, qrBlock(linkFor(r.id), 'Отсканируйте QR телефоном или откройте ссылку, чтобы получить подарок. Он закреплён за вами на 30 минут.'));
+    return refresh();
+  }).catch(function(e){ console.error(e); toast('Не получилось. Проверьте интернет и попробуйте ещё раз.') })
+    .then(function(){ btn.disabled = false });
+});
+
+// ===== Страница подарка (открывается по QR) =====
+var dlg = $('giftDlg');
+function dlgShow(build){
+  var b = $('dlgBody'); b.innerHTML = '';
+  var x = document.createElement('button'); x.className = 'close'; x.type = 'button'; x.setAttribute('aria-label', 'Закрыть'); x.textContent = '×';
+  x.addEventListener('click', function(){ dlg.close() });
+  b.appendChild(x); build(b);
+  if (!dlg.open) dlg.showModal();
+}
+function mk(tag, cls, text){ var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e }
+dlg.addEventListener('close', function(){
+  if (/^#g-/.test(location.hash)) history.replaceState(null, '', location.href.split('#')[0]);
+});
+
+function openGift(id){
+  store.get(id).then(function(r){
+    if (r) return refresh().then(function(){ return r });
+    return r;
+  }).then(function(r){
+    dlgShow(function(b){
+      if (!r) {
+        b.append(mk('p', 'eyebrow', 'Код ' + id), mk('h3', null, 'Доброе дело не найдено'),
+          mk('p', 'note', REMOTE ? 'Проверьте ссылку: возможно, в ней опечатка.' : 'Сайт работает в демо-режиме: доброе дело хранится только в том браузере, где его создали.'));
+        return;
+      }
+      var c = byChain[r.chain_id];
+      var head = mk('p', 'eyebrow', 'Цепочка ' + chainName(r) + ' · звено ' + r.position);
+      var title = mk('h3', null, r.text); title.id = 'dlgTitle';
+      var amount = mk('p', 'amount', rub(r.amount));
+      var pill = mk('span', 'pill' + (r.status === 'claimed' ? ' done' : ''), statusText(r));
+      b.append(head, title, amount, pill);
+
+      if (mine.has('given', r.id)) {
+        b.append(mk('p', 'note', r.status === 'claimed'
+          ? 'Это ваше доброе дело, и его уже получили. Вы не знаете кто, но цепочка продолжилась.'
+          : 'Это ваше доброе дело. Передайте QR или ссылку кому-нибудь, а когда его получат, статус изменится.'));
+        if (r.status !== 'claimed') b.appendChild(qrBlock(linkFor(r.id)));
+        b.appendChild(chainBtn(r));
+      } else if (r.status === 'claimed') {
+        if (mine.has('claimed', r.id)) {
+          b.append(mk('p', 'note', mine.has('continued', r.id) ? 'Вы получили это добро и уже передали его дальше. Спасибо!' : 'Вы получили это добро. Теперь ваша очередь.'));
+          if (!mine.has('continued', r.id)) b.appendChild(continueBtn(r));
+        } else {
+          b.append(mk('p', 'note', 'Это добро уже кто-то получил.'));
+        }
+        b.appendChild(chainBtn(r));
+      } else {
+        b.append(mk('p', 'note', r.amount > 0 ? 'Покажите эту страницу там, где выдают подарок, и подтвердите получение.' : 'Кто-то сделал это доброе дело для вас. Подтвердите, что приняли его.'));
+        var ok = mk('button', 'btn', 'Я получил(а) добро'); ok.type = 'button';
+        ok.addEventListener('click', function(){
+          ok.disabled = true;
+          store.claim(r.id).then(function(done){
+            if (!done) { toast('Это добро уже получили.'); return openGift(r.id) }
+            mine.add('claimed', r.id);
+            return refresh().then(function(){
+              dlgShow(function(b2){
+                var t2 = mk('h3', null, 'Добро получено!'); t2.id = 'dlgTitle';
+                b2.append(mk('p', 'eyebrow', 'Цепочка ' + chainName(r)), t2,
+                  mk('p', 'note', 'Вы стали звеном ' + r.position + '. Теперь ваша очередь: сделайте доброе дело для кого-то ещё, и цепочка продолжится.'),
+                  continueBtn(r), chainBtn(r));
+              });
+            });
+          }).catch(function(e){ console.error(e); ok.disabled = false; toast('Не получилось. Проверьте интернет и попробуйте ещё раз.') });
+        });
+        b.appendChild(ok);
+      }
+    });
+  }).catch(function(e){ console.error(e); toast('Не удалось открыть доброе дело. Проверьте интернет.') });
+}
+function continueBtn(r){
+  var b = mk('button', 'btn', 'Продолжить цепочку'); b.type = 'button';
+  b.addEventListener('click', function(){ setParent(r); dlg.close(); $('give').scrollIntoView({ behavior: 'smooth' }); setTimeout(function(){ $('deedText').focus({ preventScroll: true }) }, 400) });
+  return b;
+}
+function chainBtn(r){
+  var b = mk('button', 'textbtn', 'Посмотреть цепочку на карте'); b.type = 'button';
+  b.addEventListener('click', function(){ selChain = r.chain_id; renderMap(); dlg.close(); $('chains').scrollIntoView({ behavior: 'smooth' }) });
+  return b;
+}
+function route(){
+  var m = /^#g-([A-Z0-9]{6})$/.exec(location.hash);
+  if (m) openGift(m[1]);
+}
+addEventListener('hashchange', route);
+
+// ===== Запуск =====
+$('modeNote').textContent = REMOTE
+  ? 'Цепочки общие: их видят все, кто открывает сайт'
+  : 'Демо-режим: цепочки хранятся только в этом браузере. Чтобы они стали общими, подключите базу.';
+refresh().then(route);
+if (REMOTE) setInterval(function(){ if (!document.hidden) refresh() }, 15000);
+else addEventListener('storage', function(e){ if (e.key === LS) refresh() });
 
 // starfield
 (function(){
-  var c=document.getElementById('sky'),x=c.getContext('2d');
+  var c = $('sky'), x = c.getContext('2d');
   function draw(){
-    var w=innerWidth,h=innerHeight,d=Math.min(devicePixelRatio||1,2),r=rng(7);
-    c.width=w*d;c.height=h*d;x.setTransform(d,0,0,d,0,0);x.clearRect(0,0,w,h);
-    var n=Math.round(w*h/9000);
-    for(var i=0;i<n;i++){
-      x.globalAlpha=.15+r()*.4;x.fillStyle='#EDE3CC';
-      x.beginPath();x.arc(r()*w,r()*h,.6+r()*1.4,0,7);x.fill();
+    var w = innerWidth, h = innerHeight, d = Math.min(devicePixelRatio || 1, 2), r = rng(7);
+    c.width = w * d; c.height = h * d; x.setTransform(d, 0, 0, d, 0, 0); x.clearRect(0, 0, w, h);
+    var n = Math.round(w * h / 9000);
+    for (var i = 0; i < n; i++) {
+      x.globalAlpha = .15 + r() * .4; x.fillStyle = '#EDE3CC';
+      x.beginPath(); x.arc(r() * w, r() * h, .6 + r() * 1.4, 0, 7); x.fill();
     }
-    x.fillStyle='#D8B66A';x.globalAlpha=.8;
-    for(i=0;i<Math.max(4,n/18);i++){
-      var px=r()*w,py=r()*h,s=6+r()*5;
-      x.beginPath();x.moveTo(px,py-s);x.quadraticCurveTo(px,py,px+s,py);x.quadraticCurveTo(px,py,px,py+s);
-      x.quadraticCurveTo(px,py,px-s,py);x.quadraticCurveTo(px,py,px,py-s);x.fill();
+    x.fillStyle = '#D8B66A'; x.globalAlpha = .8;
+    for (i = 0; i < Math.max(4, n / 18); i++) {
+      var px = r() * w, py = r() * h, s = 6 + r() * 5;
+      x.beginPath(); x.moveTo(px, py - s); x.quadraticCurveTo(px, py, px + s, py); x.quadraticCurveTo(px, py, px, py + s);
+      x.quadraticCurveTo(px, py, px - s, py); x.quadraticCurveTo(px, py, px, py - s); x.fill();
     }
-    x.globalAlpha=1;
+    x.globalAlpha = 1;
   }
-  draw();addEventListener('resize',draw);
+  draw(); addEventListener('resize', draw);
 })();
-
-// gifts waiting for a recipient (examples)
-var gifts=[
-  ['Капучино','Кофейня у главного корпуса · цепочка «Орион»'],
-  ['Обед в столовой','Комплексный обед, корпус Б · цепочка «Лира»'],
-  ['Пачка чипсов','Автомат на втором этаже · новая цепочка'],
-  ['Час помощи с матанализом','Онлайн, по договорённости · цепочка «Кассиопея»']
-];
-var gl=document.getElementById('giftList');
-gifts.forEach(function(g,i){
-  var li=document.createElement('li');
-  li.innerHTML='<i class="star"></i><div class="t"><b></b><span></span></div><button class="btn ghost small" type="button" id="req'+i+'">Оставить заявку</button>';
-  li.querySelector('b').textContent=g[0];li.querySelector('span').textContent=g[1];
-  li.querySelector('button').addEventListener('click',function(){this.textContent='Заявка оставлена';this.disabled=true});
-  gl.appendChild(li);
-});
-
-// mock QR
-function mockQR(seed){
-  var c=document.getElementById('qr'),x=c.getContext('2d'),N=29,s=c.width/N,r=rng(seed);
-  x.fillStyle='#EDE3CC';x.fillRect(0,0,c.width,c.height);x.fillStyle='#0D1736';
-  for(var i=0;i<N;i++)for(var j=0;j<N;j++)if(r()>.52)x.fillRect(i*s,j*s,s,s);
-  [[0,0],[N-7,0],[0,N-7]].forEach(function(p){
-    x.fillStyle='#EDE3CC';x.fillRect((p[0]-(p[0]?1:0))*s,(p[1]-(p[1]?1:0))*s,8*s,8*s);
-    x.fillStyle='#0D1736';x.fillRect(p[0]*s,p[1]*s,7*s,7*s);
-    x.fillStyle='#EDE3CC';x.fillRect((p[0]+1)*s,(p[1]+1)*s,5*s,5*s);
-    x.fillStyle='#0D1736';x.fillRect((p[0]+2)*s,(p[1]+2)*s,3*s,3*s);
-  });
-}
-document.getElementById('giveForm').addEventListener('submit',function(e){
-  e.preventDefault();
-  var seed=Date.now()%100000,code='QV-'+(seed.toString(36)+'0000').slice(0,4).toUpperCase();
-  var kind=this.querySelector('input[name=kind]:checked').value,sum=document.getElementById('sum').value;
-  mockQR(seed);
-  document.getElementById('qrCode').textContent=code;
-  document.getElementById('qrText').textContent=kind+(sum>0?' · '+sum+' ₽':'')+'. Подарок появится в списке «Ждут получателя».';
-  document.getElementById('qrBox').hidden=false;
-});
-
-// chains (examples), named after constellations
-var chains=[
-  {name:'Орион',pts:[[70,120],[160,70],[250,110],[330,60],[420,100]],links:[
-    'Кто-то оплатил незнакомцу капучино','Получатель помог одногруппнику с матанализом','Тот провёл бесплатное занятие для школьника','Школьник донёс соседке сумки до квартиры']},
-  {name:'Лира',pts:[[470,200],[560,250],[520,330],[600,390]],links:[
-    'Кто-то оплатил обед в столовой','Получатель провёл вечер с одиноким соседом','Сосед починил велосипед мальчику со двора']},
-  {name:'Кассиопея',pts:[[60,300],[130,370],[210,310],[290,380],[370,320],[430,390]],links:[
-    'Кто-то купил пачку чипсов дежурному в общежитии','Дежурный помог первокурснице с переездом','Она час объясняла программирование другу','Друг оплатил кофе следующему в очереди','Тот отдал свои конспекты перед сессией']}
-];
-var NS='http://www.w3.org/2000/svg',svg=document.getElementById('mapSvg'),tabs=document.getElementById('tabs');
-function el(n,a){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);return e}
-chains.forEach(function(ch,i){
-  var g=el('g',{'class':'chain'}),p=ch.pts;
-  for(var k=0;k<p.length-1;k++)g.appendChild(el('line',{x1:p[k][0],y1:p[k][1],x2:p[k+1][0],y2:p[k+1][1]}));
-  p.forEach(function(q,k){g.appendChild(el('circle',{cx:q[0],cy:q[1],r:k==p.length-1?8:6,'class':k==p.length-1?'next':''}))});
-  var t=el('text',{x:p[0][0]-10,y:p[0][1]-18});t.textContent=ch.name;g.appendChild(t);
-  g.addEventListener('click',function(){pick(i)});svg.appendChild(g);ch.g=g;
-  var b=document.createElement('button');b.type='button';b.id='tab'+i;b.textContent=ch.name;
-  b.addEventListener('click',function(){pick(i)});tabs.appendChild(b);ch.b=b;
-});
-function pick(i){
-  chains.forEach(function(ch,k){ch.g.classList.toggle('on',k==i);ch.b.setAttribute('aria-pressed',k==i)});
-  var ch=chains[i],ol=document.getElementById('chainLinks');
-  document.getElementById('chainName').textContent='Цепочка «'+ch.name+'»';
-  ol.innerHTML='';
-  ch.links.forEach(function(s,k){
-    var li=document.createElement('li'),sm=document.createElement('small');
-    sm.textContent='Звено '+(k+1);li.appendChild(sm);li.appendChild(document.createTextNode(s));ol.appendChild(li);
-  });
-  var last=document.createElement('li');last.className='open';
-  last.innerHTML='<small>Звено '+(ch.links.length+1)+'</small>Ждёт продолжения';ol.appendChild(last);
-}
-pick(0);
 </script>
 </body>
 </html>
