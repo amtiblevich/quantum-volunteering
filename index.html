@@ -120,6 +120,10 @@ textarea{resize:vertical;min-height:84px}
 .side h3{font-size:30px}
 .links{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
 .links li{position:relative;padding:0 0 18px 28px;font-size:15.5px;line-height:1.45;overflow-wrap:anywhere}
+.links li.item{cursor:pointer}
+.links li.item:hover{color:var(--gold)}
+.chain circle.hit{fill:transparent;opacity:1;stroke:none;cursor:pointer}
+.chain circle.hit:hover,.chain circle.hit:focus-visible{fill:rgba(216,182,106,.18);outline:none}
 .links li::before{content:"";position:absolute;left:3px;top:6px;width:10px;height:10px;border-radius:50%;background:var(--gold)}
 .links li::after{content:"";position:absolute;left:7.5px;top:18px;bottom:-4px;width:1px;background:var(--line)}
 .links li:last-child::after{display:none}
@@ -522,6 +526,12 @@ function renderMap(){
     pts.forEach(function(p, k){
       var pending = k >= c.length || c[k].status !== 'claimed';
       g.appendChild(el('circle', { cx: p[0], cy: p[1], r: pending ? 8 : 6, 'class': pending ? 'next' : '' }));
+      if (k < c.length) {
+        var hit = el('circle', { cx: p[0], cy: p[1], r: 18, 'class': 'hit', tabindex: 0, role: 'button', 'aria-label': 'Звено ' + (k + 1) + ': ' + c[k].text });
+        hit.addEventListener('click', function(e){ e.stopPropagation(); selChain = c.id; renderMap(); openGift(c[k].id) });
+        hit.addEventListener('keydown', function(e){ if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); hit.dispatchEvent(new MouseEvent('click')) } });
+        g.appendChild(hit);
+      }
     });
     var t = el('text', { x: Math.max(10, pts[0][0] - 30), y: Math.min.apply(null, pts.map(function(p){ return p[1] })) - 16 });
     t.textContent = c.name; g.appendChild(t);
@@ -542,6 +552,9 @@ function renderMap(){
     st.textContent = ' — ' + statusText(r);
     if (r.status !== 'claimed') li.className = 'open';
     li.append(sm, document.createTextNode(r.text), st);
+    li.classList.add('item'); li.tabIndex = 0; li.setAttribute('role', 'button');
+    li.addEventListener('click', function(){ openGift(r.id) });
+    li.addEventListener('keydown', function(e){ if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openGift(r.id) } });
     ol.appendChild(li);
   });
   if (c[c.length - 1].status === 'claimed') {
@@ -553,7 +566,7 @@ function renderMap(){
 
 // ===== QR и ссылки =====
 function linkFor(id){ return location.href.split('#')[0] + '#g-' + id }
-function qrBlock(id, text){
+function qrBlock(id, text, inDialog){
   var url = linkFor(id);
   var row = document.createElement('div'); row.className = 'qrrow';
   if (window.qrcode) {
@@ -574,7 +587,7 @@ function qrBlock(id, text){
   lr.append(inp, cp); box.appendChild(lr);
   var open = document.createElement('button'); open.type = 'button'; open.className = 'textbtn'; open.textContent = 'Открыть по ссылке';
   open.addEventListener('click', function(){ openGift(id) });
-  box.appendChild(open);
+  if (!inDialog) box.appendChild(open);
   row.appendChild(box);
   return row;
 }
@@ -676,7 +689,6 @@ function openGift(id){
         b.append(mk('p', 'note', r.status === 'claimed'
           ? 'Это ваше доброе дело, и его уже получили. Вы не знаете кто, но цепочка продолжилась.'
           : 'Это ваше доброе дело. Передайте QR или ссылку кому-нибудь, а когда его получат, статус изменится.'));
-        if (r.status !== 'claimed') b.appendChild(qrBlock(r.id));
         b.appendChild(chainBtn(r));
       } else if (r.status === 'claimed') {
         if (mine.has('claimed', r.id)) {
@@ -706,6 +718,7 @@ function openGift(id){
         });
         b.appendChild(ok);
       }
+      b.appendChild(qrBlock(r.id, 'QR и ссылка на это звено цепочки', true));
     });
   }).catch(function(e){ console.error(e); toast('Не удалось открыть доброе дело. Проверьте интернет.') });
 }
