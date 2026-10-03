@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Квантовое волонтёрство</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400..700;1,400..700&family=Lora:ital,wght@0,400..700;1,400..700&display=swap">
+<style>
+body{margin:0}
+/* Layout: ночное небо из презентации — одна центральная колонка, золотые рамки, арочные карточки, созвездия как цепочки */
+:root{
+  color-scheme:dark;
+  --night:#0D1736;
+  --panel:#111D42;
+  --panel-2:#16244F;
+  --cream:#EDE3CC;
+  --gold:#D8B66A;
+  --muted:#BDB6A4;
+  --line:rgba(216,182,106,.35);
+  --display:'Cormorant Garamond',Georgia,'Times New Roman',serif;
+  --body:Lora,Georgia,'Times New Roman',serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--night);color:var(--cream);font-family:var(--body);font-size:17px;line-height:1.6;padding-inline:20px}
+#sky{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.wrap{position:relative;z-index:1;max-width:1120px;margin-inline:auto;display:flex;flex-direction:column;gap:96px;padding-block:0 64px}
+a{color:var(--gold)}
+h1,h2,h3{font-family:var(--display);font-weight:600;margin:0;text-wrap:balance;line-height:1.08}
+p{margin:0}
+:focus-visible{outline:2px solid var(--cream);outline-offset:3px}
+
+/* header */
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-block:14px;background:linear-gradient(var(--night) 70%,transparent)}
+.brand{display:flex;align-items:center;gap:12px;font-family:var(--display);font-size:22px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--cream);text-decoration:none}
+.brand i{width:14px;height:14px;background:var(--gold);transform:rotate(45deg);flex:none}
+nav{display:flex;gap:22px;flex-wrap:wrap;align-items:center}
+nav a{color:var(--muted);text-decoration:none;font-size:13px;letter-spacing:2.5px;text-transform:uppercase}
+nav a:hover{color:var(--gold)}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;font-family:var(--body);font-size:14px;letter-spacing:2.5px;text-transform:uppercase;padding:14px 26px;border:1.5px solid var(--gold);border-radius:2px;background:var(--gold);color:var(--night);font-weight:600;text-decoration:none;cursor:pointer;transition:background .2s,color .2s}
+.btn:hover{background:var(--cream);border-color:var(--cream)}
+.btn.ghost{background:transparent;color:var(--gold)}
+.btn.ghost:hover{background:rgba(216,182,106,.12);border-color:var(--gold)}
+.btn.small{padding:10px 16px;font-size:12px}
+.btn[disabled]{background:transparent;color:var(--muted);border-color:var(--line);cursor:default}
+
+/* ornaments */
+.rule{display:flex;align-items:center;gap:12px;width:min(420px,100%);color:var(--gold)}
+.rule::before,.rule::after{content:"";flex:1;height:1px;background:var(--gold);opacity:.7}
+.rule i{width:13px;height:13px;background:var(--gold);transform:rotate(45deg)}
+.eyebrow{font-size:14px;letter-spacing:5px;text-transform:uppercase;color:var(--gold)}
+.head{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}
+.head h2{font-size:clamp(34px,5vw,54px);letter-spacing:3px;text-transform:uppercase}
+.head .lead{color:var(--muted);max-width:60ch}
+section{display:flex;flex-direction:column;gap:44px;scroll-margin-top:90px}
+
+/* hero */
+.hero{position:relative;border:1.5px solid rgba(216,182,106,.7);padding:clamp(56px,9vw,110px) clamp(20px,5vw,72px);display:flex;flex-direction:column;align-items:center;gap:28px;text-align:center;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:12px;border:1px solid var(--line);pointer-events:none}
+.hero .dia{position:absolute;left:50%;width:16px;height:16px;background:var(--gold);transform:translate(-50%,-50%) rotate(45deg)}
+.sun{position:absolute;left:50%;top:50%;width:min(680px,150%);aspect-ratio:1;transform:translate(-50%,-50%);opacity:.3;pointer-events:none;
+  background:repeating-conic-gradient(var(--gold) 0 .5deg,transparent .5deg 3.75deg);
+  -webkit-mask:radial-gradient(circle,transparent 11%,#000 12%,#000 30%,transparent 50%);mask:radial-gradient(circle,transparent 11%,#000 12%,#000 30%,transparent 50%)}
+.sun-core{position:absolute;left:50%;top:50%;width:min(96px,22%);aspect-ratio:1;border-radius:50%;background:var(--gold);opacity:.22;transform:translate(-50%,-50%);pointer-events:none}
+.hero>*:not(.sun):not(.sun-core):not(.dia){position:relative}
+.moons{display:flex;gap:10px}
+.moons b{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--gold);background:var(--night);overflow:hidden;position:relative}
+.moons b::after{content:"";position:absolute;inset:0;background:var(--gold);border-radius:50%;transform:translateX(var(--p,100%))}
+.hero h1{font-size:clamp(40px,8.4vw,104px);letter-spacing:clamp(2px,.6vw,7px);text-transform:uppercase}
+.hero .tag{font-family:var(--display);font-style:italic;font-size:clamp(22px,3.4vw,38px);color:var(--gold);line-height:1.25;max-width:22ch}
+.hero .sub{color:var(--muted);max-width:56ch}
+.cta{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+.stats{display:flex;gap:clamp(20px,5vw,56px);flex-wrap:wrap;justify-content:center;font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+.stats strong{display:block;font-family:var(--display);font-size:38px;line-height:1;color:var(--cream);letter-spacing:0;font-variant-numeric:tabular-nums}
+
+/* arches */
+.arches{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px}
+.arch{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;padding:52px 26px 34px;border:1.5px solid var(--gold);border-radius:170px 170px 10px 10px;background:var(--panel);min-width:0}
+.arch .n{font-family:var(--display);font-size:34px;font-weight:600;color:var(--gold);width:64px;height:64px;border:1px dashed var(--line);border-radius:50%;display:grid;place-items:center}
+.arch h3{font-size:28px}
+.arch p{color:var(--muted);font-size:16px}
+
+/* gifts + form */
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:28px;align-items:start}
+.panel{border:1px solid var(--line);background:var(--panel);padding:28px;display:flex;flex-direction:column;gap:20px;min-width:0}
+.panel h3{font-size:30px}
+.panel .note{font-size:14px;color:var(--muted)}
+.gifts{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.gifts li{display:flex;align-items:center;gap:14px;padding-block:16px;border-top:1px solid var(--line);flex-wrap:wrap}
+.gifts li:first-child{border-top:0;padding-top:0}
+.gifts .t{flex:1;min-width:150px}
+.gifts .t b{display:block;font-family:var(--display);font-size:23px;font-weight:600;line-height:1.2}
+.gifts .t span{font-size:14px;color:var(--muted)}
+.star{width:14px;height:14px;background:var(--gold);clip-path:polygon(50% 0,60% 40%,100% 50%,60% 60%,50% 100%,40% 60%,0 50%,40% 40%);flex:none}
+form{display:flex;flex-direction:column;gap:18px}
+label,legend{font-size:12px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);padding:0}
+fieldset{border:0;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.field{display:flex;flex-direction:column;gap:8px}
+input[type=text],input[type=number],textarea{font:inherit;color:var(--cream);background:var(--night);border:1px solid var(--line);border-radius:2px;padding:12px 14px;width:100%}
+textarea{resize:vertical;min-height:76px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips input{position:absolute;opacity:0}
+.chips span{display:block;padding:8px 14px;border:1px solid var(--line);border-radius:999px;font-size:15px;color:var(--muted);cursor:pointer;text-transform:none;letter-spacing:0}
+.chips input:checked+span{background:var(--gold);color:var(--night);border-color:var(--gold);font-weight:600}
+.chips input:focus-visible+span{outline:2px solid var(--cream);outline-offset:2px}
+.qr{display:flex;gap:20px;align-items:center;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:20px}
+.qr canvas{width:132px;height:132px;background:var(--cream);padding:8px;flex:none}
+.qr .code{font-family:var(--display);font-size:30px;font-weight:600;letter-spacing:3px;color:var(--gold)}
+
+/* chains */
+.map{border:1.5px solid var(--gold);background:var(--panel);display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr)}
+.map svg{display:block;width:100%;height:auto}
+.map .side{border-left:1px solid var(--line);padding:26px;display:flex;flex-direction:column;gap:16px;min-width:0}
+.tabs{display:flex;flex-wrap:wrap;gap:8px}
+.tabs button{font:inherit;font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);background:transparent;border:1px solid var(--line);padding:8px 12px;border-radius:2px;cursor:pointer}
+.tabs button[aria-pressed=true]{color:var(--night);background:var(--gold);border-color:var(--gold);font-weight:600}
+.side h3{font-size:30px}
+.links{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.links li{position:relative;padding:0 0 18px 28px;font-size:15.5px;line-height:1.45}
+.links li::before{content:"";position:absolute;left:3px;top:6px;width:10px;height:10px;border-radius:50%;background:var(--gold)}
+.links li::after{content:"";position:absolute;left:7.5px;top:18px;bottom:-4px;width:1px;background:var(--line)}
+.links li:last-child::after{display:none}
+.links li.open::before{background:transparent;border:1.5px dashed var(--gold)}
+.links small{display:block;color:var(--muted);font-size:12px;letter-spacing:2px;text-transform:uppercase}
+.chain line{stroke:var(--gold);stroke-width:1;opacity:.3;transition:opacity .2s}
+.chain circle{fill:var(--gold);opacity:.45;transition:opacity .2s}
+.chain{cursor:pointer}
+.chain.on line{opacity:.9;stroke-width:1.6}
+.chain.on circle{opacity:1}
+.chain circle.next{fill:var(--panel);stroke:var(--gold);stroke-dasharray:3 3}
+.chain text{fill:var(--muted);font-family:var(--display);font-size:20px;font-style:italic}
+.chain.on text{fill:var(--cream)}
+@media (max-width:760px){.map{grid-template-columns:1fr}.map .side{border-left:0;border-top:1px solid var(--line)}}
+
+/* principles */
+.three{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:32px}
+.three div{display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--gold);padding-top:18px}
+.three h3{font-size:28px;color:var(--gold)}
+.three p{color:var(--muted)}
+.quote{font-family:var(--display);font-style:italic;font-size:clamp(24px,3.4vw,36px);line-height:1.3;text-align:center;max-width:26ch;margin-inline:auto;color:var(--cream)}
+
+footer{display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center;font-size:13px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);border-top:1px solid var(--line);padding-top:36px}
+.demo-flag{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);border:1px dashed var(--line);padding:4px 10px;align-self:flex-start}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<canvas id="sky" aria-hidden="true"></canvas>
+
+<div class="wrap">
+<header>
+  <a class="brand" href="#top"><i></i>Квантовое волонтёрство</a>
+  <nav>
+    <a href="#how">Как это работает</a>
+    <a href="#gifts">Подарки</a>
+    <a href="#chains">Цепочки</a>
+    <a href="#anon">Анонимность</a>
+  </nav>
+</header>
+
+<section class="hero" id="top">
+  <span class="dia" style="top:0"></span><span class="dia" style="top:100%"></span>
+  <div class="sun"></div><div class="sun-core"></div>
+  <div class="moons" aria-hidden="true">
+    <b style="--p:100%"></b><b style="--p:65%"></b><b style="--p:35%"></b><b style="--p:0%"></b><b style="--p:-35%"></b><b style="--p:-65%"></b><b style="--p:-100%"></b>
+  </div>
+  <h1>Квантовое<br>волонтёрство</h1>
+  <div class="rule"><i></i></div>
+  <p class="tag">Как одно доброе дело может запустить целую цепочку</p>
+  <p class="sub">Оплатите кофе, обед или час своего времени для незнакомого человека. Он получит подарок по QR-коду и передаст добро дальше. Имён нет, а цепочка остаётся на карте.</p>
+  <div class="cta">
+    <a class="btn" href="#give">Подарить добро</a>
+    <a class="btn ghost" href="#gifts">Получить подарок</a>
+  </div>
+  <div class="stats">
+    <div><strong>3</strong>цепочки</div>
+    <div><strong>12</strong>добрых дел</div>
+    <div><strong>0</strong>имён</div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="head">
+    <p class="eyebrow">Механика</p>
+    <h2>Как это работает</h2>
+    <div class="rule"><i></i></div>
+  </div>
+  <div class="arches">
+    <div class="arch"><span class="n">1</span><h3>Сделай что-то хорошее</h3><p>Оплати подарок для незнакомца: кофе, обед, пачку чипсов. Сайт создаст QR-код.</p></div>
+    <div class="arch"><span class="n">2</span><h3>Кто-то его получит</h3><p>Любой человек оставляет заявку на сайте, получает код и забирает подарок.</p></div>
+    <div class="arch"><span class="n">3</span><h3>Передай дальше</h3><p>Получатель делает своё доброе дело, и оно само становится следующим звеном.</p></div>
+    <div class="arch"><span class="n">4</span><h3>Посмотри, куда дошло</h3><p>На карте видно, как растёт цепочка. Кто в ней участвовал, не знает никто.</p></div>
+  </div>
+</section>
+
+<section id="gifts">
+  <div class="head">
+    <p class="eyebrow">Участвовать</p>
+    <h2>Подарить или получить</h2>
+    <div class="rule"><i></i></div>
+    <p class="lead">Два входа в одну цепочку. Можно начать новую или продолжить ту, что уже идёт.</p>
+  </div>
+  <div class="two">
+    <div class="panel" id="give">
+      <h3>Сделать подарок</h3>
+      <form id="giveForm">
+        <fieldset>
+          <legend>Что подарить</legend>
+          <div class="chips">
+            <label><input type="radio" name="kind" id="k1" value="Кофе" checked><span>Кофе</span></label>
+            <label><input type="radio" name="kind" id="k2" value="Обед в столовой"><span>Обед в столовой</span></label>
+            <label><input type="radio" name="kind" id="k3" value="Чипсы"><span>Чипсы</span></label>
+            <label><input type="radio" name="kind" id="k4" value="Час времени"><span>Час времени</span></label>
+            <label><input type="radio" name="kind" id="k5" value="Помощь с учёбой"><span>Помощь с учёбой</span></label>
+          </div>
+        </fieldset>
+        <div class="field"><label for="sum">Сумма, ₽</label><input type="number" id="sum" min="0" step="10" value="250"></div>
+        <div class="field"><label for="wish">Пожелание получателю (необязательно)</label><textarea id="wish" placeholder="Хорошего дня. Передай дальше."></textarea></div>
+        <button class="btn" type="submit">Оплатить и получить QR</button>
+      </form>
+      <div class="qr" id="qrBox" hidden>
+        <canvas id="qr" width="232" height="232" aria-label="Макет QR-кода"></canvas>
+        <div>
+          <p class="note">Код подарка</p>
+          <p class="code" id="qrCode"></p>
+          <p class="note" id="qrText"></p>
+        </div>
+      </div>
+      <p class="demo-flag">Демо: оплата не подключена, QR — макет</p>
+    </div>
+
+    <div class="panel">
+      <h3>Ждут получателя</h3>
+      <ul class="gifts" id="giftList"></ul>
+      <p class="demo-flag">Примеры подарков</p>
+    </div>
+  </div>
+</section>
+
+<section id="chains">
+  <div class="head">
+    <p class="eyebrow">Главная фишка</p>
+    <h2>Карта цепочек</h2>
+    <div class="rule"><i></i></div>
+    <p class="lead">Каждая цепочка похожа на созвездие: точка — доброе дело, линия — связь между незнакомыми людьми. Пунктирная точка ждёт продолжения.</p>
+  </div>
+  <div class="map">
+    <svg id="mapSvg" viewBox="0 0 660 440" role="img" aria-label="Карта цепочек добрых дел"></svg>
+    <div class="side">
+      <div class="tabs" id="tabs"></div>
+      <h3 id="chainName"></h3>
+      <ol class="links" id="chainLinks"></ol>
+      <p class="demo-flag">Примеры цепочек</p>
+    </div>
+  </div>
+</section>
+
+<section id="anon">
+  <div class="head">
+    <p class="eyebrow">Правила</p>
+    <h2>Всё анонимно</h2>
+    <div class="rule"><i></i></div>
+  </div>
+  <div class="three">
+    <div><h3>Без имён</h3><p>На сайте нет профилей, фотографий и подписей. В цепочке видно только само дело.</p></div>
+    <div><h3>Без обязательств</h3><p>Не нужно вступать в организацию. Продолжать цепочку или нет, решает получатель.</p></div>
+    <div><h3>Не ради лайков</h3><p>Даритель не знает, кому помог. Он знает только, что кому-то помог, и видит, куда дошла цепочка.</p></div>
+  </div>
+  <p class="quote">Люди не знакомы друг с другом. Их связывает только цепочка действий.</p>
+  <div class="cta"><a class="btn" href="#give">Начать свою цепочку</a></div>
+</section>
+
+<footer>
+  <div class="rule"><i></i></div>
+  <p>Игорь Москалик · Николай Хлебников · Егор Быков · Андрей Тиблевич</p>
+  <p>Студенческий проект · демо-версия</p>
+</footer>
+</div>
+
+<script>
+// seeded random so the sky is the same on every load
+function rng(seed){return function(){seed=(seed*1664525+1013904223)%4294967296;return seed/4294967296}}
+
+// starfield
+(function(){
+  var c=document.getElementById('sky'),x=c.getContext('2d');
+  function draw(){
+    var w=innerWidth,h=innerHeight,d=Math.min(devicePixelRatio||1,2),r=rng(7);
+    c.width=w*d;c.height=h*d;x.setTransform(d,0,0,d,0,0);x.clearRect(0,0,w,h);
+    var n=Math.round(w*h/9000);
+    for(var i=0;i<n;i++){
+      x.globalAlpha=.15+r()*.4;x.fillStyle='#EDE3CC';
+      x.beginPath();x.arc(r()*w,r()*h,.6+r()*1.4,0,7);x.fill();
+    }
+    x.fillStyle='#D8B66A';x.globalAlpha=.8;
+    for(i=0;i<Math.max(4,n/18);i++){
+      var px=r()*w,py=r()*h,s=6+r()*5;
+      x.beginPath();x.moveTo(px,py-s);x.quadraticCurveTo(px,py,px+s,py);x.quadraticCurveTo(px,py,px,py+s);
+      x.quadraticCurveTo(px,py,px-s,py);x.quadraticCurveTo(px,py,px,py-s);x.fill();
+    }
+    x.globalAlpha=1;
+  }
+  draw();addEventListener('resize',draw);
+})();
+
+// gifts waiting for a recipient (examples)
+var gifts=[
+  ['Капучино','Кофейня у главного корпуса · цепочка «Орион»'],
+  ['Обед в столовой','Комплексный обед, корпус Б · цепочка «Лира»'],
+  ['Пачка чипсов','Автомат на втором этаже · новая цепочка'],
+  ['Час помощи с матанализом','Онлайн, по договорённости · цепочка «Кассиопея»']
+];
+var gl=document.getElementById('giftList');
+gifts.forEach(function(g,i){
+  var li=document.createElement('li');
+  li.innerHTML='<i class="star"></i><div class="t"><b></b><span></span></div><button class="btn ghost small" type="button" id="req'+i+'">Оставить заявку</button>';
+  li.querySelector('b').textContent=g[0];li.querySelector('span').textContent=g[1];
+  li.querySelector('button').addEventListener('click',function(){this.textContent='Заявка оставлена';this.disabled=true});
+  gl.appendChild(li);
+});
+
+// mock QR
+function mockQR(seed){
+  var c=document.getElementById('qr'),x=c.getContext('2d'),N=29,s=c.width/N,r=rng(seed);
+  x.fillStyle='#EDE3CC';x.fillRect(0,0,c.width,c.height);x.fillStyle='#0D1736';
+  for(var i=0;i<N;i++)for(var j=0;j<N;j++)if(r()>.52)x.fillRect(i*s,j*s,s,s);
+  [[0,0],[N-7,0],[0,N-7]].forEach(function(p){
+    x.fillStyle='#EDE3CC';x.fillRect((p[0]-(p[0]?1:0))*s,(p[1]-(p[1]?1:0))*s,8*s,8*s);
+    x.fillStyle='#0D1736';x.fillRect(p[0]*s,p[1]*s,7*s,7*s);
+    x.fillStyle='#EDE3CC';x.fillRect((p[0]+1)*s,(p[1]+1)*s,5*s,5*s);
+    x.fillStyle='#0D1736';x.fillRect((p[0]+2)*s,(p[1]+2)*s,3*s,3*s);
+  });
+}
+document.getElementById('giveForm').addEventListener('submit',function(e){
+  e.preventDefault();
+  var seed=Date.now()%100000,code='QV-'+(seed.toString(36)+'0000').slice(0,4).toUpperCase();
+  var kind=this.querySelector('input[name=kind]:checked').value,sum=document.getElementById('sum').value;
+  mockQR(seed);
+  document.getElementById('qrCode').textContent=code;
+  document.getElementById('qrText').textContent=kind+(sum>0?' · '+sum+' ₽':'')+'. Подарок появится в списке «Ждут получателя».';
+  document.getElementById('qrBox').hidden=false;
+});
+
+// chains (examples), named after constellations
+var chains=[
+  {name:'Орион',pts:[[70,120],[160,70],[250,110],[330,60],[420,100]],links:[
+    'Кто-то оплатил незнакомцу капучино','Получатель помог одногруппнику с матанализом','Тот провёл бесплатное занятие для школьника','Школьник донёс соседке сумки до квартиры']},
+  {name:'Лира',pts:[[470,200],[560,250],[520,330],[600,390]],links:[
+    'Кто-то оплатил обед в столовой','Получатель провёл вечер с одиноким соседом','Сосед починил велосипед мальчику со двора']},
+  {name:'Кассиопея',pts:[[60,300],[130,370],[210,310],[290,380],[370,320],[430,390]],links:[
+    'Кто-то купил пачку чипсов дежурному в общежитии','Дежурный помог первокурснице с переездом','Она час объясняла программирование другу','Друг оплатил кофе следующему в очереди','Тот отдал свои конспекты перед сессией']}
+];
+var NS='http://www.w3.org/2000/svg',svg=document.getElementById('mapSvg'),tabs=document.getElementById('tabs');
+function el(n,a){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);return e}
+chains.forEach(function(ch,i){
+  var g=el('g',{'class':'chain'}),p=ch.pts;
+  for(var k=0;k<p.length-1;k++)g.appendChild(el('line',{x1:p[k][0],y1:p[k][1],x2:p[k+1][0],y2:p[k+1][1]}));
+  p.forEach(function(q,k){g.appendChild(el('circle',{cx:q[0],cy:q[1],r:k==p.length-1?8:6,'class':k==p.length-1?'next':''}))});
+  var t=el('text',{x:p[0][0]-10,y:p[0][1]-18});t.textContent=ch.name;g.appendChild(t);
+  g.addEventListener('click',function(){pick(i)});svg.appendChild(g);ch.g=g;
+  var b=document.createElement('button');b.type='button';b.id='tab'+i;b.textContent=ch.name;
+  b.addEventListener('click',function(){pick(i)});tabs.appendChild(b);ch.b=b;
+});
+function pick(i){
+  chains.forEach(function(ch,k){ch.g.classList.toggle('on',k==i);ch.b.setAttribute('aria-pressed',k==i)});
+  var ch=chains[i],ol=document.getElementById('chainLinks');
+  document.getElementById('chainName').textContent='Цепочка «'+ch.name+'»';
+  ol.innerHTML='';
+  ch.links.forEach(function(s,k){
+    var li=document.createElement('li'),sm=document.createElement('small');
+    sm.textContent='Звено '+(k+1);li.appendChild(sm);li.appendChild(document.createTextNode(s));ol.appendChild(li);
+  });
+  var last=document.createElement('li');last.className='open';
+  last.innerHTML='<small>Звено '+(ch.links.length+1)+'</small>Ждёт продолжения';ol.appendChild(last);
+}
+pick(0);
+</script>
+</body>
+</html>
